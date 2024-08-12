@@ -5,7 +5,7 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
-- job: Python27
+- job: TestPython27
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -19,6 +19,23 @@ jobs:
 
   - script: |
       pip install pytest pytest-azurepipelines
-      pytest
+      pytest path/to/test_file.py
     displayName: 'Run tests'
 
+- job: TestPython35
+  dependsOn: TestPython27
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.5'
+    displayName: 'Use Python 3.5'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    displayName: 'Install dependencies'
+
+  - script: |
+      pip install pytest pytest-azurepipelines
+      pytest path/to/test_file.py
+    displayName: 'Run tests'
